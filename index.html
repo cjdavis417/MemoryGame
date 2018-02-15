@@ -9,14 +9,24 @@
     <body>
         <header>
             <h1>Memory Game</h1>
-            <button id="reset">RESET</button>
+            <button id="exit-game" onclick="gameExit();">Exit Game</button>
         </header>
 
         <main>
+            <div id="welcome-screen">
+                <h2>The Game of Memory!</h2>
+                <h4>press START to play!</h4>
+                <form>
+                    <input type="radio" name="difficulty" value="easy" checked>Easy<br>
+                    <input type="radio" name="difficulty" value="medium">Medium<br>
+                    <input type="radio" name="difficulty" value="hard">Hard<br>
+                </form>
+                <button id='start' name="start" onclick="startGame();">START!</button>
+            </div>
             <div id="game-board">
                 <div id='game-status'>
                     <h3>Unmatched Pairs: XX</h3>
-                    <h3>Timer: 3min and 45seconds</h3>
+                    <h3>Time Remaining: 00:00</h3>
                 </div>
                 <div id="button-container">
                     <button id="card1" name="memory_card1"></button>

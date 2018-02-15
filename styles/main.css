@@ -6,12 +6,16 @@ html {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+body {
+    background: linear-gradient(#fff, #ddd);
+}
+
 header {
     display: flex;
     width: 100%;
     align-items: center;
     justify-content: space-between;
-    background-color: #770077;
+    background-color: #ff7600;
     color: white;
 }
 
@@ -24,9 +28,39 @@ header button {
     margin-right: 10px;
 }
 
+#welcome-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    margin: 10px auto;
+    padding: 40px 0;
+    background-color: #ffd1aa;
+    color: #552700;
+    border-radius: 5px;
+}
+
+#welcome-screen input[name=difficulty] {
+    margin: 8px 5px;
+}
+
+#start {
+    margin-top: 20px;
+    width: 175px;
+    height: 40px;
+    border-bottom: solid 4px #777;
+    border-radius: 10px;
+}
+
+#start:hover {
+    border-bottom: solid 4px #777;
+    border-radius: 10px;
+    background-color: #fafafa;
+}
+
 #game-board {
     border: solid black 1px;
-    margin-top: 10px;
+    margin: 25px 0;
 }
 
 #button-container {

@@ -1,6 +1,11 @@
 var numberOfButtons;
 
-$('button')
+$('#game-board, #exit-game').hide()
+
+function startGame() {
+    $('#welcome-screen').fadeOut(2000);
+    $('#game-board, #exit-game').delay(2000).fadeIn(2000);
+}
 
 function cardWidth(cardHeight)  {
     var cardRatio = 63 / 88;
@@ -8,4 +13,9 @@ function cardWidth(cardHeight)  {
     return cdWidth = cardHeight * cardRatio;
 }
 
-$('#card1').height(500).width(cardWidth(500));
+function gameExit() {
+    $('#game-board, #exit-game').fadeOut(2000);
+    $('#welcome-screen').delay(2000).fadeIn(2000);
+}
+
+$('#card1').height(250).width(cardWidth(250));

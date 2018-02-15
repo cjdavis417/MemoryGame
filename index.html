@@ -8,33 +8,31 @@
     </head>
     <body>
         <header>
-            <h1>Game of Memory</h1>
+            <h1>Memory Game</h1>
+            <button id="reset">RESET</button>
         </header>
 
         <main>
-
-            <div id="button-container">
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
-                <button id="card1" name="memory_card1"></button>
+            <div id="game-board">
+                <div id='game-status'>
+                    <h3>Unmatched Pairs: XX</h3>
+                    <h3>Timer: 3min and 45seconds</h3>
+                </div>
+                <div id="button-container">
+                    <button id="card1" name="memory_card1"></button>
+                </div> 
             </div>
 
         </main>
-
+<footer>
+        <div id="built-with">
+            <h3>Built with</h3>
+            <img src="img/jQuery-Logo.png">
+        </div>
+</footer>
 
         <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="scripts/memory.js"></script>
 
     </body>
 </html>

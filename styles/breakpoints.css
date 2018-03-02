@@ -1,0 +1,22 @@
+@media (max-width: 960px) {
+    #welcome-screen {
+        width: 85%;
+    }
+
+    #game-board {
+        width: 90%
+    }
+}
+
+@media (max-width: 660px) {
+    #welcome-screen {
+        width: 95%;
+    }
+
+    #game-board {
+        width: 95%;
+    }
+
+
+
+}

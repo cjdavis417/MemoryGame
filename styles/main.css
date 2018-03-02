@@ -10,6 +10,13 @@ body {
     background: linear-gradient(#fff, #ddd);
 }
 
+h1, h2, h3, h4, h5, h6, strong {
+    font-family: "Cutive", serif;
+    letter-spacing: 0.2em;
+    /* text-transform: uppercase;
+    text-indent: 0.5em; */
+  }
+
 header {
     display: flex;
     width: 100%;
@@ -28,6 +35,10 @@ header button {
     margin-right: 10px;
 }
 
+#exit-game {
+    padding: 5px 10px;
+}
+
 #welcome-screen {
     display: flex;
     flex-direction: column;
@@ -38,6 +49,10 @@ header button {
     background-color: #ffd1aa;
     color: #552700;
     border-radius: 5px;
+}
+
+#welcome-screen h2 {
+    text-align: center;
 }
 
 #welcome-screen input[name=difficulty] {
@@ -59,12 +74,68 @@ header button {
 }
 
 #game-board {
+    width: 85%;
+    margin: 10px auto;
     border: solid black 1px;
-    margin: 25px 0;
+}
+
+#game-board h3 {
+    margin-left: 10px;
 }
 
 #button-container {
     background-color: green;
+    display: flex;
+    width: 100%;
+    align-content: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.card {
+    display: relative;
+    height: 181px;
+    width: 130px;
+    border-radius: 10px;
+    border: solid purple 3px;
+    margin: 10px 5px;
+}
+
+/* .card .face,
+.card .back {
+    display: absolute;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    background-image: url(../img/ShagCard.jpg);
+} */
+
+.flipper.card {
+    width: 130px;
+    height: 181px;
+    display: inline-block;
+}
+
+.flipper.card>* {
+    background-image: url(../img/star_wars_card.jpg);
+    border-radius: 10px;
+}
+
+.flipper.card>.back {
+    background-position: -845px -1178px;
+}
+
+.flipper.card>.face {
+    background-position: -40px -48px;
+}
+
+.card .flipped {
+    transform: rotateY(180deg);
+}
+
+.card img {
+    border-radius: 10px;
+    width: 100%;
 }
 
 footer {
@@ -94,16 +165,14 @@ main {
     width: 80%;
 }
 
-#button-container {
-    display: flex;
-    width: 100%;
-    align-content: center;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
 button {
     /* flex-basis: 125px;
     height: 175px; */
     margin: 8px 8px;
+    padding: 0;
+}
+
+img {
+    margin: 0;
+
 }

@@ -18,6 +18,7 @@ function cardWidth(cHeight)  {
 function gameExit() {
     $('#game-board, #exit-game').fadeOut(2000);
     $('#welcome-screen').delay(2000).fadeIn(2000);
+    $('#game-board')
 }
 
 function gameSetup() {

@@ -94,24 +94,6 @@ header button {
     justify-content: space-around;
 }
 
-/* .card {
-    display: relative;
-    height: 181px;
-    width: 130px;
-    border-radius: 10px;
-    border: solid purple 3px;
-    margin: 10px 5px;
-} */
-
-/* .card .face,
-.card .back {
-    display: absolute;
-    height: 100%;
-    width: 100%;
-    margin: auto;
-    background-image: url(../img/ShagCard.jpg);
-} */
-
 .flipper {
     position: relative;
     cursor: pointer;

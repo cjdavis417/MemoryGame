@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<!-- saved from url=(0038)http://home.jejaju.com/play/flipCards/ -->
+<html class="transform"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<meta name="viewport" content="initial-scale=0.4, user-scalable=0">
+	<!-- http://ogp.me -->
+	<!-- https://developers.facebook.com/tools/debug/og/object?q=http%3A%2F%2Fhome.jejaju.com%2Fplay%2FflipCards%2F -->
+	<meta property="og:url" content="http://home.jejaju.com/play/flipCards/">
+	<meta property="og:image" content="http://home.jejaju.com/play/flipCards/fullHouse.png">
+	<meta property="og:title" content="Flip Cards">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="JeJaJu">
+	<meta property="og:description" content="Animated Poker Hands">
+
+	<link rel="image_src" href="http://home.jejaju.com/play/flipCards/fullHouse.png">
+	<title>Flip Cards</title>
+	<script src="./Flip Cards_files/jquery-2.0.3.min.js"></script>
+	<script>
+		"use strict"
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+		if ('function' !== typeof Array.prototype.reduce) {
+			Array.prototype.reduce = function(callback, opt_initialValue){
+				'use strict';
+				if (null === this || 'undefined' === typeof this) {
+					// At the moment all modern browsers, that support strict mode, have
+					// native implementation of Array.prototype.reduce. For instance, IE8
+					// does not support strict mode, so this check is actually useless.
+					throw new TypeError(
+							'Array.prototype.reduce called on null or undefined');
+				}
+				if ('function' !== typeof callback) {
+					throw new TypeError(callback + ' is not a function');
+				}
+				var index, value,
+						length = this.length >>> 0,
+						isValueSet = false;
+				if (1 < arguments.length) {
+					value = opt_initialValue;
+					isValueSet = true;
+				}
+				for (index = 0; length > index; ++index) {
+					if (this.hasOwnProperty(index)) {
+						if (isValueSet) {
+							value = callback(value, this[index], index, this);
+						}
+						else {
+							value = this[index];
+							isValueSet = true;
+						}
+					}
+				}
+				if (!isValueSet) {
+					throw new TypeError('Reduce of empty array with no initial value');
+				}
+				return value;
+			};
+		}
+		function zpad2(i){
+			return i<=9?"0"+i:i.toString()
+		}
+		function doesCSS(p){
+			var s = ( document.body || document.documentElement).style;
+			return !!$.grep(['','-moz-', '-webkit-'],function(v){
+				return  typeof s[v+p] === 'string'
+			}).length
+		}
+		$('html')
+			.toggleClass('transform',doesCSS('transform'))
+			.toggleClass('no-transform',!doesCSS('transform'))
+		$.fn.blink = function(times, duration,callback) {
+			times = times || 3
+			duration = duration || 300
+			var self= this
+			if (typeof callback ==="function")
+				setTimeout(function(){
+					callback.call(self)
+				},2*times*duration)
+			while (times--) {
+				self.fadeTo(duration, 0).fadeTo(duration, 1);
+			}
+			return self;
+		};
+		$.fn.randomOne=function(){return this.eq( Math.floor(Math.random()*this.length))};
+		$.fn.players=function(i){
+			var html=[];
+			for (var player=0;player<i;player++){
+				html.push('<div class="hand"><h3>Score</h3></div>')
+			}
+			html = $(html.join('<hr/>'))
+			return $(html).appendTo(this).filter('.hand')
+		}
+		$.fn.cards = function(i){
+			var html=''
+			for(var card=0;card<i;card++){
+				html+='<div class="card flipper manual"> <div class="face"> </div> <div class="back"> </div> </div>'
+			}
+			return $(html).prependTo(this)
+		}
+		$(function(){
+			var g=$('#game').players(2).cards(5)
+			$('#deal').click(deal).click()
+			$('#reveal').click(reveal)
+			setTimeout(reveal,2000)
+			setTimeout(deal,4000)
+		})
+		function scoreValue(a){
+			return +a.reduce(function(previousValue, currentValue, index, array){
+				return previousValue + zpad2(currentValue);
+			},".")
+		}
+		function score(){
+			var cards="deuce,three,four,five,six,seven,eight,nine,ten,jack,queen,king,ace,joker".split(','),
+				plurals="deuces,threes,fours,fives,sixes,sevens,eights,nines,tens,jacks,queens,kings,aces,jokers".split(','),
+				suits="diamonds,clubs,hearts,spades".split(','),
+				score = {}
+			function reverse(a,b){return a>b?-1:+1}
+			var hand=$(this).find('.flipped .face').map(function(){
+				var card= deck[$(this).data('i')]
+				return {
+					name: cards[card.card]+' of '+suits[card.suit],
+					card:card.card,
+					suit:card.suit
+				}
+			}).get()
+			var ofAKind=[]
+			$.each(hand,function(i,card){
+				if (!ofAKind[card.card])
+					ofAKind[card.card]=0
+				ofAKind[card.card]++
+			})
+			score.value=[]
+			var res=[],
+				sorted=$.map(hand,function(v){return v.card}).sort(reverse),
+				flush=hand.every(function(el){return el.suit==hand[0].suit})
+			switch (Math.max.apply(Math,ofAKind.filter(function(v){return v}))) {
+				case 1: // one of a kind
+					if (ofAKind.join(',').match(/1,1,1,1,1/)){
+						res.push(flush && sorted[0]==12?'royal':'straight')
+						score.value=[50,sorted[0]]
+					}
+					if (flush){
+						res.push('flush')
+						score.value=[36].concat(sorted)
+					}
+					if (res.length==0){
+						res.push(cards[sorted[0]] + ' high')
+						score.value=[10].concat(sorted)
+					}
+					score.score = res.join(' ')
+					break
+				case 2: // two of a kind
+					var first=ofAKind.indexOf(2),
+						second=ofAKind.lastIndexOf(2),
+						firstPair=plurals[first],
+						secondPair=plurals[second],
+						twoPair=ofAKind.concat().sort(reverse).join(',').match("2,2"),
+						rest=sorted.filter(function(i){return i!==first && i!==second}).pop()
+					if (twoPair){
+						score.score =first>second
+							?firstPair +" and "+secondPair
+							:secondPair+" and "+firstPair
+						score.value=[25,Math.max(first,second),Math.min(first,second),rest]
+					}else{
+						score.score ="pair of "+firstPair
+						score.value=[20,first].concat(rest)
+					}
+					break
+				case 3:
+					var fullHouse = ofAKind.concat().sort(reverse).join(',').match("3,2"),
+						three=ofAKind.indexOf(3),
+						two=ofAKind.indexOf(2)
+					if (fullHouse){
+						score.score = "full house, "+plurals[three]+" over "+plurals[two]
+						score.value=[37,three,two]
+					} else {
+						score.score = "three "+plurals[ofAKind.indexOf(3)]
+						score.value=[30,three]
+					}
+					break
+				case 4:
+					var four=ofAKind.indexOf(4)
+					score.score = "four "+plurals[four]
+					score.value=[40,four]
+					break
+				default:
+					score.score = "what do you have"
+			}
+			score.value= scoreValue(score.value)
+			$(this)
+				.data('score',score.value)
+				.find('h3').text(score.score+(hand.length==5?"":"?"))
+		}
+
+		var animations
+		$.fn.flip=function(cmd){
+			return this.each(function(){
+				if (cmd=="on"){
+					animations++
+					$(this).addClass('flipped')
+				} else if (cmd=="off"){
+					$(this).removeClass('flipped')
+				}
+			})
+		}
+		$(document).on('transitionend webkitTransitionEnd','.flipped .back',function(e){
+			animations--
+			if (animations==0) {
+				$(this).closest('.hand').each(score)
+				if ($('.card:not(.flipped)').length==0){
+					var hand1=$('.hand:eq(0)'),
+						hand2=$('.hand:eq(1)')
+					if (hand1.data('score') > hand2.data('score'))
+						hand1.blink().find('h3').append(" Wins!!!! ")
+					else
+						hand2.blink().find('h3').append(" Wins!!!! ")
+				}
+			}
+		//	console.log('-'+animations)
+		})
+		var deck
+		function deal(e){
+			animations=0
+			$('.hand').stop(false,true)
+			deck=(function(cards,suits){
+				var deck=[]
+				for (var suit=0;suit<suits;suit++){
+					for (var card=0;card<cards;card++){
+						deck.push({card:card,suit:suit,bg:'-'+Math.floor(75+(132.33*card))+'px -'+ Math.floor(43+(185*suit))+'px'})
+					}
+				}
+				if (!(e && e.shiftKey))
+					for (var i = deck.length - 1; i > 0; i--) {
+						var j = Math.floor(Math.random() * (i + 1)),
+							temp = deck[i]
+						deck[i] = deck[j]
+						deck[j] = temp
+					}
+				return deck.reverse()
+			})(13,4)
+			$('.card').removeData('score').each(function(i,el){
+				setTimeout(function(){
+					$(el).flip("off")
+				},i*50)
+			})
+			$(".card").off('click').one('click',function(){
+				$(this).flip("on")
+			})
+			setTimeout(function(){
+				$('.card .face').each(function(i,el){
+					$(el).css('background-position',deck[i].bg).data('i',i)
+				})
+			},1000)
+			$('.hand h3').text('what do you have?')
+		}
+		function reveal(){
+			$('.card').each(function(i,el){
+				setTimeout(function(){
+					$(el).flip("on")
+				},i*50)
+			})
+			setTimeout(function(){
+				$('.hand').each(score)
+			},500)
+		}
+	</script>
+	<style>
+		section, footer, nav { display: block; }
+	
+		body
+		{
+			font-family: 'Helvetica Neue', Arial, sans-serif;
+			-webkit-text-size-adjust: none;
+			color: #333;
+			width:96%;min-width:800px;
+		}
+		.hand { text-align: center; }
+		.hand h3
+		{
+			text-decoration: none;
+			text-transform: capitalize;
+			background:white;
+		}
+		.flipper { position: relative; cursor:pointer; }
+		.transform .flipper>*{
+			-webkit-transition: 1s ease-in-out;
+			-moz-transition: 1s ease-in-out;
+			transition: 1s ease-in-out;
+			-webkit-backface-visibility: hidden;
+			-moz-backface-visibility: hidden;
+			backface-visibility: hidden;
+		}
+		.flipper>*
+		{
+			position: absolute;
+			width: 100%;
+			height: 100%;
+		}
+		.no-transform .flipper>.back{ display:inline}
+		.no-transform .flipper>.face{ display:none}
+		.no-transform .flipper.flipped>.back,.no-transform .flipper.hover:hover>.back{ display:none}
+		.no-transform .flipper.flipped>.face,.no-transform .flipper.hover:hover>.face{ display:inline}
+		.transform .flipper>.back
+		{
+			-moz-transform: perspective(800px) rotateY(0);
+			-webkit-transform: perspective(800px) rotateY(0);
+			transform: perspective(800px) rotateY(0);
+		}
+		.transform .flipper>.face
+		{
+			-moz-transform: perspective(800px) rotateY(-180deg);
+			-webkit-transform: perspective(800px) rotateY(-180deg);
+			transform: perspective(800px) rotateY(-180deg);
+		}
+		.transform .flipper.hover:hover>.back,
+		.transform .flipper.flipped>.back
+		{
+			-moz-transform: perspective(800px) rotateY(180deg);
+			-webkit-transform: perspective(800px) rotateY(180deg);
+			transform: perspective(800px) rotateY(180deg);
+		}
+		.transform .flipper.hover:hover>.face,
+		.transform .flipper.flipped>.face
+		{
+			-moz-transform: perspective(800px) rotateY(0deg);
+			-webkit-transform: perspective(800px) rotateY(0deg);
+			transform: perspective(800px) rotateY(0deg);
+		}
+	
+		.flipper.card
+		{
+			width: 130px;
+			height: 181px;
+			display: inline-block;
+		}
+		.flipper.card>* {
+			background-image: url(card-deck-01.jpg); 
+			border-radius:10px;
+		}
+		.flipper.card>.back { background-position: -1795.29px -413px; }
+		.flipper.card>.face { background-position: -339px -413px; }
+		#deal,#reveal{font-size:200%}
+	</style>
+
+</head>
+<body style="">
+	<h1>Flip Cards</h1>
+	
+	<div id="game">
+		<div class="hand" style="opacity: 1;">
+			<div class="card flipper manual"> 
+				<div class="face" style="background-position: -1001px -598px;"> </div> 
+				<div class="back"> </div> 
+			</div>
+			<div class="card flipper manual"> 
+				<div class="face" style="background-position: -1398px -228px;"> </div> 
+				<div class="back"> </div> 
+			</div>
+			<div class="card flipper manual"> 
+				<div class="face" style="background-position: -1530px -598px;"> </div> 
+				<div class="back"> </div> 
+			</div>
+			<div class="card flipper manual"> 
+				<div class="face" style="background-position: -736px -413px;"> </div> 
+				<div class="back"> </div> 
+			</div>
+			<div class="card flipper manual"> 
+				<div class="face" style="background-position: -471px -228px;"> </div> 
+				<div class="back"> </div> 
+			</div>
+			<h3>what do you have?</h3>
+		</div>
+		<hr>
+		<div class="hand" style="opacity: 1;">
+			<div class="card flipper manual"> 
+				<div class="face" style="background-position: -1133px -43px;"> </div> 
+				<div class="back"> </div> 
+			</div>
+			<div class="card flipper manual"> 
+				<div class="face" style="background-position: -1662px -228px;"> </div> 
+				<div class="back"> </div> 
+			</div>
+			<div class="card flipper manual"> 
+				<div class="face" style="background-position: -339px -43px;"> </div> 
+				<div class="back"> </div> 
+			</div>
+			<div class="card flipper manual"> 
+				<div class="face" style="background-position: -207px -228px;"> </div> 
+				<div class="back"> </div> 
+			</div>
+			<div class="card flipper manual"> 
+				<div class="face" style="background-position: -1398px -43px;"> </div> 
+				<div class="back"> </div> 
+			</div
+			><h3>what do you have?</h3>
+		</div>
+	</div>
+	
+	<button id="deal">Deal</button>
+	<button id="reveal">Reveal</button>
+
+
+</body></html>

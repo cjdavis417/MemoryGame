@@ -26,7 +26,7 @@ function gameSetup() {
         var $card = $("<div class='card flipper manual' id='memory_card_" + i + "' onclick='gameTurn()'><div class='face'></div><div class='back'></div></div>");
         
         //$card.height(cardHeight).width(cardWidth(cardHeight));
-        $("#button-container").append($card);
+        $("#card-container").append($card);
     }
 
     // $.fn.cards = function(i){
@@ -37,9 +37,9 @@ function gameSetup() {
     //     return $(html).prependTo(this)
     // }
 
-    $(function(){
-        var g=$('#game').cards(10)
-    })
+//    $(function(){
+//         var g=$('#game').cards(10)
+//     }) 
 
     // var animations;
     // $.fn.flip = function(cmd) {

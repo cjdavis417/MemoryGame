@@ -18,13 +18,13 @@ function cardWidth(cHeight)  {
 function gameExit() {
     $('#game-board, #exit-game').fadeOut(2000);
     $('#welcome-screen').delay(2000).fadeIn(2000);
-    $('#game-board')
+    $('#game-board');
 }
 
 function gameSetup() {
     numberOfCards = 10;
     for (i = 0; i < numberOfCards; i++) {
-        var $card = $("<div class='card flipper manual' id='memory_card_" + i + "' onclick='gameTurn()'><div class='face'></div><div class='back'></div></div>");
+        var $card = $("<div class='card flipper manual' id='memory_card_" + i + "' onclick='gameTurn()'><div class='face' id='face_" + i + "' ></div><div class='back' id='back_" + i + "'></div></div>");
         
         //$card.height(cardHeight).width(cardWidth(cardHeight));
         $("#card-container").append($card);
@@ -56,5 +56,17 @@ function gameSetup() {
 }
 
 function gameTurn() {
-    console.log("card selected");
+    $('.card').on('click', function() {
+
+        var $cardSelected = $(this).attr('id');
+        console.log($cardSelected);
+
+        var $backCard = $($cardSelected).children('div.first')
+        console.log($backCard);
+
+        $($backCard).css('display', 'none');
+
+        // flip card
+        
+    });
 }
